@@ -2,7 +2,7 @@
 //  MemorizeApp.swift
 //  Memorize
 //
-//  Created by 李宜嵘 on 2020/11/17.
+//  Created by lyrisli on 2020/11/17.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ import SwiftUI
 struct MemorizeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(viewModel: EmojiMemoryGame())
         }
     }
 }
