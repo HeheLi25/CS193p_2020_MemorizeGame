@@ -10,26 +10,22 @@ import SwiftUI
 struct EmojiMemoryGameView: View {
     //ObervedObject，意思是这是一个ObservableObject，每次改变都redraw，才能实现翻牌
     @ObservedObject var viewModel: EmojiMemoryGame
+    
     var body: some View {
-        HStack {
-            ForEach(viewModel.cards) { card in
-                CardView(card: card)
-                    .aspectRatio(2/3, contentMode: .fit)
-                    .padding(10)
-                    .onTapGesture {
-                        viewModel.choose(card: card)
-                    }
-            }
+        Grid (items: viewModel.cards) { card in
+            CardView(card: card).onTapGesture {
+                viewModel.choose(card: card)
+            } // .aspectRatio(2/3, contentMode: .fit)
+            .padding(5)
         }
-        .foregroundColor(Color.orange)
-        .padding()
-        .font(Font.largeTitle)
-       
+            .padding()
+            .foregroundColor(Color.orange)
     }
 }
 
 struct CardView: View {
     var card: MemoryGame<String>.Card
+    
     var body: some View {
         GeometryReader { geometry in
             self.body(for: geometry.size) //传入父view给的最大空间大小
@@ -59,6 +55,7 @@ struct CardView: View {
         min(size.width, size.height) * 0.75
     }
 }
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
