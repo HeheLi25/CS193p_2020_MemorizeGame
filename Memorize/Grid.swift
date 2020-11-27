@@ -33,10 +33,12 @@ struct Grid<Item, ItemView>: View where Item: Identifiable, ItemView: View{
     }
     
     func body(for item: Item, in layout: GridLayout) -> some View {
-        let index = self.items.firstIndex(matching: item)
+        let index = self.items.firstIndex(matching: item)!
         return viewForItem(item)  // 调用viewForItem来获取一个item的view
             .frame(width: layout.itemSize.width, height: layout.itemSize.height)
             .position(layout.location(ofItemAt: index))
+
+
     }
 }
 
