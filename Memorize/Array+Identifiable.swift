@@ -2,7 +2,7 @@
 //  Array+Identifiable.swift
 //  Memorize
 //
-//  Created by 李宜嵘 on 2020/11/26.
+//  Created by lyrisli on 2020/11/26.
 //
 
 import Foundation
@@ -11,7 +11,7 @@ import Foundation
 extension Array where Element : Identifiable {
     func firstIndex(matching: Element) -> Int? {
         for index in 0..<self.count {
-            if(self[index].id == matching.id) {
+            if self[index].id == matching.id {
                 return index
             }
         }

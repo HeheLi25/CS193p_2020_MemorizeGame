@@ -17,7 +17,7 @@ class EmojiMemoryGame: ObservableObject {
     //private(set)像一个玻璃门，只有这个类可以修改，但别人都可以看
     @Published private var model: MemoryGame<String> = EmojiMemoryGame.createMemoryGame()
     
-    static func createMemoryGame() -> MemoryGame<String>{
+    private static func createMemoryGame() -> MemoryGame<String>{
         let emojis: Array<String> = ["🍐","🍎","🍒"]
         return MemoryGame<String>(numberOfPairsOfCards: 3) { pairIndex in
             return emojis[pairIndex]
