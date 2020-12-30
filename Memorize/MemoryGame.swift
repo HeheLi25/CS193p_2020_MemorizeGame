@@ -41,16 +41,70 @@ struct MemoryGame<CardContent> where CardContent : Equatable {
         cards = Array<Card>() //初始化cards变量
         for pairIndex in 0..<numberOfPairsOfCards {
             let content = cardContentFactory(pairIndex)
-            cards.append(Card(content: content, id: pairIndex*2)) //在数组增加新元素
+            cards.append(Card(content: content, id: pairIndex*2))
             cards.append(Card(content: content, id: pairIndex*2+1))
         }
         cards.shuffle()
     }
     
     struct Card: Identifiable{ //MemoryGame.Card
-        var isFaceUp: Bool = false
-        var isMatched: Bool = false
+        var isFaceUp: Bool = false {
+            didSet {
+                if isFaceUp {
+                    startUsingBonusTime()
+                } else {
+                    stopUsingBonusTime()
+                }
+            }
+        }
+        var isMatched: Bool = false {
+            didSet {
+                stopUsingBonusTime()
+            }
+        }
         var content: CardContent // 泛型类型
         var id: Int  //Identifiable需要一个唯一的id
+        
+        var bonusTimeLimit: TimeInterval = 6
+        
+        // 卡片正面朝上的时间
+        private var faceUpTime: TimeInterval {
+            if let lastFaceUpDate = self.lastFaceUpDate {
+                return pastFaceUpTime + Date().timeIntervalSince(lastFaceUpDate)
+            } else {
+                return pastFaceUpTime
+            }
+        }
+        // 卡片上一次翻成正面朝上的时间点
+        var lastFaceUpDate: Date?
+        // 过去这这张卡片正面朝上的时间（不包括本次）
+        var pastFaceUpTime: TimeInterval = 0
+        // 剩余的额外时间
+        var bonusTimeRemaining: TimeInterval {
+            max(0, bonusTimeLimit - faceUpTime)
+        }
+        // 剩余额外时间的比例
+        var bonusRemaining: Double {
+            (bonusTimeLimit > 0 && bonusTimeRemaining > 0) ? bonusTimeRemaining/bonusTimeLimit : 0
+        }
+        // 在额外时间内，卡片有没有被配对成功
+        var hasEarnedBonus: Bool {
+            isMatched && bonusTimeRemaining > 0
+        }
+        // 是否当前正面朝上，且还未配对，且还有剩余时间
+        var isConsumingBonusTime: Bool {
+            isFaceUp && !isMatched && bonusTimeRemaining > 0
+        }
+        // 当卡片变为正面朝上时调用
+        private mutating func startUsingBonusTime() {
+            if isConsumingBonusTime, lastFaceUpDate == nil {
+                lastFaceUpDate = Date()
+            }
+        }
+        // 当卡片变回背面朝上时调用
+        private mutating func stopUsingBonusTime() {
+            pastFaceUpTime = faceUpTime
+            self.lastFaceUpDate = nil
+        }
     }
 }
